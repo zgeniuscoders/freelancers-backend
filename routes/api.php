@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -10,6 +11,10 @@ Route::get('/user', function (Request $request) {
 
 
 Route::prefix('v1')->group(function () {
-    Route::post("login",[AuthController::class, "login"]);
-    Route::post("register",[AuthController::class, "register"]);
+    Route::post("login", [AuthController::class, "login"]);
+    Route::post("register", [AuthController::class, "register"]);
+
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::apiResource("user-profiles", UserProfileController::class);
+    });
 });
