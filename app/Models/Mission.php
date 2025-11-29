@@ -30,4 +30,8 @@ class Mission extends Model
     public function participations(){
         return $this->hasMany(Participation::class);
     }
+
+    public function skills(){
+        return $this->belongsToMany(Skill::class);
+    }
 }
