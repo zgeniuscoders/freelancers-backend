@@ -26,4 +26,8 @@ class Mission extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function participations(){
+        return $this->hasMany(Participation::class);
+    }
 }
