@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Data\AddMissionData;
+use App\Enums\MissionStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddMissionRequest;
 use App\Http\Requests\UpdateMissionRequest;
 use App\Http\Resources\MissionResource;
 use App\Models\Mission;
+use App\Models\Skill;
 use Illuminate\Http\Request;
 
 class MissionController extends Controller
@@ -23,13 +26,30 @@ class MissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AddMissionRequest $request)
+    public function store(AddMissionData $data)
     {
-        $userId = $request->user()->id;
-        $data = $request->validated();
-        $data["user_id"] = $userId;
+        $userId = auth()->user()->id;
         $mission = Mission::query()
-            ->create($data);
+            ->create(
+                array_merge(
+                    $data->toArray(),
+                    [
+                        "user_id" => $userId,
+                        "status" => MissionStatusEnum::OPEN->value
+                    ]
+                )
+            );
+
+
+        foreach ($data->skills as $skill) {
+            $newSkill = Skill::query()->where("name", $skill)->first();
+            if (!$newSkill) {
+                $newSkill = Skill::query()->create([
+                    "name" => $skill
+                ]);
+            }
+            $mission->skills()->attach([$newSkill->id]);
+        }
 
         return new MissionResource($mission);
     }
