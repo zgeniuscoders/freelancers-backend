@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryContoller;
 use App\Http\Controllers\Api\MissionController;
+use App\Http\Controllers\Api\SkillController;
 use App\Http\Controllers\Api\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,5 +21,6 @@ Route::prefix('v1')->group(function () {
         Route::apiResource("user-profiles", UserProfileController::class);
         Route::apiResource("categories", CategoryContoller::class);
         Route::apiResource("missions", MissionController::class);
+        Route::apiResource("skills", SkillController::class);
     });
 });
