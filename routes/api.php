@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CategoryContoller;
 use App\Http\Controllers\Api\MissionController;
 use App\Http\Controllers\Api\SkillController;
 use App\Http\Controllers\Api\UserProfileController;
+use App\Http\Controllers\Api\UserSkillController;
 use App\Http\Controllers\ParticipationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,10 @@ Route::prefix('v1')->group(function () {
         Route::apiResource("categories", CategoryContoller::class);
         Route::apiResource("missions", MissionController::class);
         Route::apiResource("skills", SkillController::class);
-        Route::apiResource("participations", ParticipationController::class)->only(["update","store"]);
+        Route::apiResource("participations", ParticipationController::class)->only(["update", "store"]);
+
+        Route::post("users/skills", [UserSkillController::class, "store"]);
+        Route::get('users/{id}/skills', [UserSkillController::class, "getUserSkills"]);
+        Route::delete('skills/{id}/users', [UserSkillController::class, "destroy"]);
     });
 });
