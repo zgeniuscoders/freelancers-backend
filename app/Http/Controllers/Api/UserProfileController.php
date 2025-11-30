@@ -15,7 +15,38 @@ class UserProfileController extends Controller
 {
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/api/v1/user-profiles",
+     *     summary="Créer un profil utilisateur",
+     *     description="Ajoute un nouveau profil utilisateur",
+     *     tags={"UserProfiles"},
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"bio","user_id"},
+     *                 @OA\Property(property="bio", type="string", maxLength=500, example="Je suis développeur full-stack."),
+     *                 @OA\Property(property="avatar", type="string", format="binary"),
+     *                 @OA\Property(property="user_id", type="integer", example=1)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Profil créé",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="bio", type="string", example="Je suis développeur full-stack."),
+     *             @OA\Property(property="avatar", type="string", example="http://example.com/storage/avatars/avatar.jpg"),
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=500, description="Erreur serveur")
+     * )
      */
     public function store(AddUserProfileRequest $request)
     {
@@ -40,7 +71,33 @@ class UserProfileController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/api/v1/user-profiles/{id}",
+     *     summary="Afficher un profil utilisateur",
+     *     description="Récupère les détails d'un profil utilisateur par son ID",
+     *     tags={"UserProfiles"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID du profil",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Détails du profil",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="bio", type="string", example="Je suis développeur full-stack."),
+     *             @OA\Property(property="avatar", type="string", example="http://example.com/storage/avatars/avatar.jpg"),
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Profil non trouvé"),
+     *     @OA\Response(response=500, description="Erreur serveur")
+     * )
      */
     public function show(string $id)
     {
@@ -54,7 +111,7 @@ class UserProfileController extends Controller
                 ], 404);
             }
 
-             return new UserProfileResource($userProfile);
+            return new UserProfileResource($userProfile);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -65,7 +122,44 @@ class UserProfileController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @OA\Put(
+     *     path="/api/v1/user-profiles/{id}",
+     *     summary="Mettre à jour un profil utilisateur",
+     *     description="Modifie un profil existant",
+     *     tags={"UserProfiles"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID du profil",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="bio", type="string", maxLength=500, example="Je suis développeur full-stack."),
+     *                 @OA\Property(property="avatar", type="string", format="binary")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profil mis à jour",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="bio", type="string", example="Je suis développeur full-stack."),
+     *             @OA\Property(property="avatar", type="string", example="http://example.com/storage/avatars/avatar.jpg"),
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Profil non trouvé"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=500, description="Erreur serveur")
+     * )
      */
     public function update(UpdateUserProfileRequest $request, string $id)
     {
@@ -103,7 +197,24 @@ class UserProfileController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @OA\Delete(
+     *     path="/api/v1/user-profiles/{id}",
+     *     summary="Supprimer un profil utilisateur",
+     *     description="Supprime un profil existant",
+     *     tags={"UserProfiles"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID du profil",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Profil supprimé avec succès"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Profil non trouvé"),
+     *     @OA\Response(response=500, description="Erreur serveur")
+     * )
      */
     public function destroy(string $id): JsonResponse
     {
